@@ -30,7 +30,7 @@
 	display: inline-block;
 	text-decoration: none;
 }
-.tagator.results-visible {
+.tagator.options-visible {
 	position: relative;
 	z-index: 101;
 }
@@ -90,8 +90,8 @@
 	/*padding: 0px 0px;*/
 }
 
-/* results holder */
-.tagator_results {
+/* options holder */
+.tagator_options {
 	margin: 0;
 	padding: 0;
 	border: 1px solid #7f9db9;
@@ -108,7 +108,7 @@
 	left: -1px;
 	right: -1px;
 }
-.tagator.results-hidden .tagator_results {
+.tagator.options-hidden .tagator_options {
 	display: none;
 }
 

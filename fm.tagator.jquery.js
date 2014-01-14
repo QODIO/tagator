@@ -32,7 +32,7 @@
 			prefix: 'tagator_',
 			height: 'auto',
 			useDimmer: false,
-			showAllResultsOnFocus: false,
+			showAllOptionsOnFocus: false,
 			autocomplete: []
 		};
 	
@@ -42,7 +42,7 @@
 		var tags_element = null;
 		var input_element = null;
 		var textlength_element = null;
-		var results_element = null;
+		var options_element = null;
 		var key = {
 			backspace: 8,
 			enter: 13,
@@ -76,7 +76,7 @@
 			if (element.id !== undefined) {
 				$(box_element).attr('id', plugin.settings.prefix + element.id);
 			}
-			$(box_element).addClass('tagator results-hidden');
+			$(box_element).addClass('tagator options-hidden');
 			$(box_element).css({
 				width: $(element).css('width'),
 				padding: $(element).css('padding'),
@@ -107,11 +107,11 @@
 			$(input_element).width(20);
 			$(input_element).attr('autocomplete', 'false');
 			$(box_element).append(input_element);
-			// results element
-			results_element = document.createElement('ul');
-			$(results_element).addClass(plugin.settings.prefix + 'results');
+			// options element
+			options_element = document.createElement('ul');
+			$(options_element).addClass(plugin.settings.prefix + 'options');
 
-			$(box_element).append(results_element);
+			$(box_element).append(options_element);
 
 			//// ================== BIND ELEMENTS EVENTS ================== ////
 			// source element
@@ -147,8 +147,8 @@
 			$(box_element).bind('click', function (e) {
 				e.preventDefault();
 				e.stopPropagation();
-				if (plugin.settings.showAllResultsOnFocus) {
-					//showResults();
+				if (plugin.settings.showAllOptionsOnFocus) {
+					//showOptions();
 					searchOptions();
 				}
 				input_element.focus();
@@ -177,14 +177,14 @@
 						if (selected_index > -1) {
 							selected_index = selected_index - 1;
 						} else {
-							selected_index = $(results_element).find('.' + plugin.settings.prefix + 'option').length - 1;
+							selected_index = $(options_element).find('.' + plugin.settings.prefix + 'option').length - 1;
 						}
 						refreshActiveOption();
 						scrollToActiveOption();
 						break;
 					case key.down:
 						e.preventDefault();
-						if (selected_index < $(results_element).find('.' + plugin.settings.prefix + 'option').length - 1) {
+						if (selected_index < $(options_element).find('.' + plugin.settings.prefix + 'option').length - 1) {
 							selected_index = selected_index + 1;
 						} else {
 							selected_index = -1;
@@ -237,7 +237,7 @@
 				} else if (keyCode < 37 || keyCode > 40) {
 					searchOptions();
 				}
-				if ($(box_element).hasClass('results-hidden') && (keyCode === key.left || keyCode === key.right || keyCode === key.up || keyCode === key.down)) {
+				if ($(box_element).hasClass('options-hidden') && (keyCode === key.left || keyCode === key.right || keyCode === key.up || keyCode === key.down)) {
 					searchOptions();
 				}
 				resizeInput();
@@ -245,7 +245,7 @@
 			$(input_element).bind('focus', function (e) {
 				e.preventDefault();
 				e.stopPropagation();
-				if (!$(results_element).is(':empty') || plugin.settings.showAllResultsOnFocus) {
+				if (!$(options_element).is(':empty') || plugin.settings.showAllOptionsOnFocus) {
 					searchOptions();
 					showOptions();
 				}
@@ -344,10 +344,10 @@
 
 
 
-		// RESULTS SEARCH METHOD
+		// OPTIONS SEARCH METHOD
 		var searchOptions = function () {
-			$(results_element).empty();
-			if (input_element.value.replace(/\s/g, '') !== '' || plugin.settings.showAllResultsOnFocus) {
+			$(options_element).empty();
+			if (input_element.value.replace(/\s/g, '') !== '' || plugin.settings.showAllOptionsOnFocus) {
 				var optionsArray = [];
 				$.each(plugin.settings.autocomplete, function (key, value) {
 					if (value.toLowerCase().indexOf(input_element.value.toLowerCase()) !== -1) {
@@ -359,7 +359,7 @@
 				generateOptions(optionsArray);
 			}
 			if ($(input_element).is(':focus')) {
-				if (!$(results_element).is(':empty')) {
+				if (!$(options_element).is(':empty')) {
 					showOptions();
 				} else {
 					hideOptions();
@@ -370,13 +370,13 @@
 			selected_index = -1;
 		};
 
-		// GENERATE RESULTS
+		// GENERATE OPTIONS
 		var generateOptions = function (optionsArray) {
 			var index = -1;
 			$(optionsArray).each(function (key, value) {
 				index++;
 				var option = createOption(value, index);
-				$(results_element).append(option);
+				$(options_element).append(option);
 			});
 			refreshActiveOption();
 		};
@@ -414,47 +414,47 @@
 			return option;
 		};
 
-		// SHOW RESULTS AND DIMMER
+		// SHOW OPTIONS AND DIMMER
 		var showOptions = function () {
-			$(box_element).removeClass('results-hidden').addClass('results-visible');
+			$(box_element).removeClass('options-hidden').addClass('options-visible');
 			if (plugin.settings.useDimmer) {
 				$('#' + plugin.settings.prefix + 'dimmer').show();
 			}
-			$(results_element).css('top', ($(box_element).outerHeight()-2) + 'px');
+			$(options_element).css('top', ($(box_element).outerHeight()-2) + 'px');
 			if ($(box_element).hasClass('single')) {
-				selected_index = $(results_element).find('.' + plugin.settings.prefix + 'option').index($(results_element).find('.' + plugin.settings.prefix + 'option.active'));
+				selected_index = $(options_element).find('.' + plugin.settings.prefix + 'option').index($(options_element).find('.' + plugin.settings.prefix + 'option.active'));
 			}
 			scrollToActiveOption();
 		};
 
-		// HIDE RESULTS AND DIMMER
+		// HIDE OPTIONS AND DIMMER
 		var hideOptions = function () {
-			$(box_element).removeClass('results-visible').addClass('results-hidden');
+			$(box_element).removeClass('options-visible').addClass('options-hidden');
 			if (plugin.settings.useDimmer) {
 				$('#' + plugin.settings.prefix + 'dimmer').hide();
 			}
 		};
 
-		// REFRESH ACTIVE IN RESULTS METHOD
+		// REFRESH ACTIVE IN OPTIONS METHOD
 		var refreshActiveOption = function () {
-			$(results_element).find('.active').removeClass('active');
+			$(options_element).find('.active').removeClass('active');
 			if (selected_index !== -1) {
-				$(results_element).find('.' + plugin.settings.prefix + 'option').eq(selected_index).addClass('active');
+				$(options_element).find('.' + plugin.settings.prefix + 'option').eq(selected_index).addClass('active');
 			}
 		};
 
-		// SCROLL TO ACTIVE OPTION IN RESULTS LIST
+		// SCROLL TO ACTIVE OPTION IN OPTIONS LIST
 		var scrollToActiveOption = function () {
-			var $active_element = $(results_element).find('.' + plugin.settings.prefix + 'option.active');
+			var $active_element = $(options_element).find('.' + plugin.settings.prefix + 'option.active');
 			if ($active_element.length > 0) {
-				$(results_element).scrollTop($(results_element).scrollTop() + $active_element.position().top - $(results_element).height()/2 + $active_element.height()/2);
+				$(options_element).scrollTop($(options_element).scrollTop() + $active_element.position().top - $(options_element).height()/2 + $active_element.height()/2);
 			}
 
 		};
 
 		// SELECT ACTIVE ITEM
 		var selectOption = function () {
-			addTag($(results_element).find('.' + plugin.settings.prefix + 'option').eq(selected_index).data('text'));
+			addTag($(options_element).find('.' + plugin.settings.prefix + 'option').eq(selected_index).data('text'));
 		};
 
 

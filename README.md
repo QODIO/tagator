@@ -20,7 +20,7 @@ $('#inputBox').tagator();
 
 ###### if you want to change settings:
 ```javascript
-$('#selectBox').selectator({
+$('#inputBox').selectator({
     prefix: 'tagator_',           // CSS class prefix
     height: 'auto',               // auto or element
     useDimmer: false,             // dims the screen when result list is visible

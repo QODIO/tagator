@@ -1,68 +1,32 @@
-Selectator
+Tagator
 ==========
-Selectator is a jQuery-based replacement for select boxes. It supports searching, and affects the original select box directly, which is used as the data container.
-[You can see a demo here](http://opensource.faroemedia.com/selectator).
+Tagator is a jQuery-based replacement for input boxes, making them tagging boxes. It supports searching, and affects the original input box directly, which is used as a comma serparated data container.
+[You can see a demo here](http://opensource.faroemedia.com/tagator).
 
 
 Usage
 -----
 ###### include in head:
 ```html
-<link rel="stylesheet" href="fm.selectator.jquery.css"/>
+<link rel="stylesheet" href="fm.tagator.jquery.css"/>
 <script src="jquery-2.0.3.min.js"></script>
 <script src="fm.tagator.jquery.js"></script>
 ```
 
 ###### to activate replacement:
 ```javascript
-$('#selectBox').selectator();
+$('#inputBox').tagator();
 ```
 
 ###### if you want to change settings:
 ```javascript
 $('#selectBox').selectator({
-    prefix: 'selectator_',        // CSS class prefix
+    prefix: 'tagator_',           // CSS class prefix
     height: 'auto',               // auto or element
     useDimmer: false,             // dims the screen when result list is visible
-    showAllResultsOnFocus: false, // shows all results if input box is empty
-    searchCallback: function(){}, // Callback function when enter is pressed and 
-                                  //   no option is active in multi select box
-    labels: {
-        search: 'Search...'       // Placeholder text in search box in single select box
-    }
+    showAllResultsOnFocus: false  // shows all results even if input box is empty
 });
 ```
-
-###### Extra attributes for option tags
-By using `data-left`, `data-right` and `data-subtitle` attribute tags you can extend the information shown in the options. These can be styled through css, and are named `prefix_`title, `prefix_`left, `prefix_`right and `prefix_`subtitle. The data in the tags is pure html, so you can even put images there.
-
-```html
-<select id="selectBox">
-    <!-- Normal option tag -->
-    <option id="1">This is the title</option>
-    <!-- Extended option tag -->
-    <option id="2" data-left="This is the left section" data-right="This is the right section" data-subtitle="This is the section under the title">This is the title</option>
-</select>
-```
-It will be displayed something like this this:
-<table>
-    <tr>
-        <td rowspan="2">
-            Left
-        </td>
-        <td>
-            Title
-        </td>
-        <td rowspan="2">
-            Right
-        </td>
-    </tr>
-    <tr>
-        <td>
-            Subtitle
-        </td>
-    </tr>
-</table>
 
 
 CSS classes
@@ -71,24 +35,14 @@ Here is a list of all the css classes
 
 Class                         | Description
 ----------------------------- | ------------------------------------------------------------------------------
-selectator                    | This is the new select box. It has some extra classes called `single` and `multiple`, which tell if it is a multiple selection or single selection select box. And also `results-visible` and `results-hidden` which tell if the results list is visible or not.
-`prefix_`chosen_items         | The holder for the chosen items.
-`prefix_`chosen_item          | The holder for the chosen item.
-`prefix_`chosen_item_title    | The title of the chosen item.
-`prefix_`chosen_item_left     | The left section of the chosen item.
-`prefix_`chosen_item_right    | The right section of the chosen item.
-`prefix_`chosen_item_subtitle | The bottom section of the chosen item.
-`prefix_`chosen_item_remove   | The remove button for the chosen item.
-`prefix_`input                | This is the input box for the selectator. This is used together with `results-visible` or `results-hidden` to show and style it differently if it is a multiple selection box or a single selection box.
-`prefix_`textlength           | This is used to calculate the size of the input box for the multiple selection box.
-`prefix_`results              | The results list holder. This is used together with `results-visible` or `results-hidden` to show or hide the results.
-`prefix_`group_header         | This is the group title option.
-`prefix_`group                | This is the group options holder.
-`prefix_`option               | This is a result option. It has an extra class called `active` which tells if the option is the active one.
-`prefix_`option_title         | The title of the result option.
-`prefix_`option_left          | The left section of the result option.
-`prefix_`option_right         | The right section of the result option.
-`prefix_`option_subtitle      | The bottom section of the result option.
+tagator                       | This is the new select box. It has some extra classes called `results-visible` and `results-hidden` which tell if the results list is visible or not.
+`prefix_`tags                 | The holder for the tags.
+`prefix_`tag                  | The tags.
+`prefix_`tag_remove           | The remove button for the tag.
+`prefix_`input                | This is the input box for the tagator.
+`prefix_`textlength           | This is used to calculate the size of the input box.
+`prefix_`options              | The autocomplete options list holder. This is used together with `results-visible` or `results-hidden` to show or hide the autocomplete results.
+`prefix_`option               | This is a autocomplete option. It has an extra class called `active` which tells if the option is the active one.
 `prefix_`dimmer               | This is the dimmer
 
 
@@ -97,29 +51,13 @@ DOM Structure
 * dimmer
 * selectator: *containing the `single`|`multiple` class and the `results-visible`|`results-hidden` class*
     * textlength
-    * chosen_items
-        * chosen_item
-            * chosen_item_left
-            * chosen_item_right
-            * chosen_item_title
-            * chosen_item_subtitle
-            * chosen_item_remove
-        * chosen_item...
+    * tags
+        * tag
+            * tag_remove
+        * tag...
     * input
-    * results
-        * group_header
-        * group
-            * option: *containing the `active` class*
-                * option_left
-                * option_right
-                * option_title
-                * option_subtitle
-            * option...
+    * options
         * option: *containing the `active` class*
-            * option_left
-            * option_right
-            * option_title
-            * option_subtitle
         * option...
 
 
@@ -127,17 +65,17 @@ jQuery methods
 --------------
 Method             | Description
 ------------------ | -----------
-refreshChosenItems | This method is used internally by the plugin, but you can also call it manually, it is used to refresh the plugin. A scenario where this would be useful is if the data in the original select box is changed by some other script.
-destroy            | This method is used to remove the instance of the plugin from the select box and restore it to its original state.
+refresh            | This method is used internally by the plugin, but you can also call it manually, it is used to refresh the plugin. A scenario where this would be useful is if the data in the original input box is changed by some other script.
+destroy            | This method is used to remove the instance of the plugin from the input box and restore it to its original state.
 
 
 ###### Method usage
 ```javascript
-$('#selectBox').selectator('refreshChosenItems');
+$('#inputBox').tagator('refresh');
 ```
 or 
 ```javascript
-$('#selectBox').selectator('destroy');
+$('#inputBox').tagator('destroy');
 ```
 
 
@@ -149,10 +87,6 @@ Browser compatibility
 * Safari ???
 * Opera ???
 
-
-Internationalization
---------------------
-Selectator supports language by setting labels through the plugin options.
 
 
 Copyright and license

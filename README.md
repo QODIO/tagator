@@ -20,7 +20,7 @@ $('#inputBox').tagator();
 
 ###### if you want to change settings:
 ```javascript
-$('#inputBox').selectator({
+$('#inputBox').tagator({
     prefix: 'tagator_',           // CSS class prefix
     height: 'auto',               // auto or element
     useDimmer: false,             // dims the screen when result list is visible
@@ -35,7 +35,7 @@ Here is a list of all the css classes
 
 Class                         | Description
 ----------------------------- | ------------------------------------------------------------------------------
-tagator                       | This is the new select box. It has some extra classes called `results-visible` and `results-hidden` which tell if the results list is visible or not.
+tagator                       | This is the new input box. It has some extra classes called `results-visible` and `results-hidden` which tell if the results list is visible or not.
 `prefix_`tags                 | The holder for the tags.
 `prefix_`tag                  | The tags.
 `prefix_`tag_remove           | The remove button for the tag.

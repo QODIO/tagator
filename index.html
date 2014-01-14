@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Tagator Plugin</title>
+	<link rel="stylesheet" href="fm.tagator.jquery.css"/>
+	<style>
+		body {
+			font-family: sans-serif;
+			margin: 0;
+			padding: 0;
+		}
+		#wrapper {
+			padding: 15px;
+		}
+		#inputTagator {
+			width: 300px;
+		}
+	</style>
+	<script src="jquery-2.0.3.min.js"></script>
+	<script src="fm.tagator.jquery.js"></script>
+	<script>
+		$(function () {
+			$('#activate_tagator').click(function () {
+				if ($('#inputTagator').data('tagator') === undefined) {
+					$('#inputTagator').tagator({
+						autocomplete: ['first', 'second', 'third', 'fourth', 'fifth', 'sixth', 'seventh', 'eighth', 'ninth', 'tenth']
+					});
+					$('#activate_tagator').val('destroy tagator');
+				} else {
+					$('#inputTagator').tagator('destroy');
+					$('#activate_tagator').val('activate tagator');
+				}
+			});
+			$('#activate_tagator').trigger('click');
+		});
+	</script>
+</head>
+<body>
+	<div id="wrapper">
+		<input id="inputTagator" name="inputTagator" value="Test,Best,Rest">
+		<input value="activate tagator" id="activate_tagator" type="button">
+	</div>
+</body>
+</html>

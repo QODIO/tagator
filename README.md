@@ -24,7 +24,7 @@ $('#inputBox').tagator({
     prefix: 'tagator_',           // CSS class prefix
     height: 'auto',               // auto or element
     useDimmer: false,             // dims the screen when result list is visible
-    showAllResultsOnFocus: false  // shows all results even if input box is empty
+    showAllOptionsOnFocus: false  // shows all options even if input box is empty
 });
 ```
 
@@ -35,13 +35,13 @@ Here is a list of all the css classes
 
 Class                         | Description
 ----------------------------- | ------------------------------------------------------------------------------
-tagator                       | This is the new input box. It has some extra classes called `results-visible` and `results-hidden` which tell if the results list is visible or not.
+tagator                       | This is the new input box. It has some extra classes called `options-visible` and `options-hidden` which tell if the options list is visible or not.
 `prefix_`tags                 | The holder for the tags.
 `prefix_`tag                  | The tags.
 `prefix_`tag_remove           | The remove button for the tag.
 `prefix_`input                | This is the input box for the tagator.
 `prefix_`textlength           | This is used to calculate the size of the input box.
-`prefix_`options              | The autocomplete options list holder. This is used together with `results-visible` or `results-hidden` to show or hide the autocomplete results.
+`prefix_`options              | The autocomplete options list holder. This is used together with `options-visible` or `options-hidden` to show or hide the autocomplete options.
 `prefix_`option               | This is a autocomplete option. It has an extra class called `active` which tells if the option is the active one.
 `prefix_`dimmer               | This is the dimmer
 
@@ -49,7 +49,7 @@ tagator                       | This is the new input box. It has some extra cla
 DOM Structure
 -------------
 * dimmer
-* selectator: *containing the `single`|`multiple` class and the `results-visible`|`results-hidden` class*
+* selectator: *containing the `single`|`multiple` class and the `options-visible`|`options-hidden` class*
     * textlength
     * tags
         * tag

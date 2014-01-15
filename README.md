@@ -49,7 +49,7 @@ tagator                       | This is the new input box. It has some extra cla
 DOM Structure
 -------------
 * dimmer
-* selectator: *containing the `single`|`multiple` class and the `options-visible`|`options-hidden` class*
+* tagator: *containing the `options-visible`|`options-hidden` class*
     * textlength
     * tags
         * tag

@@ -452,14 +452,14 @@
 
 		};
 
-		// SELECT ACTIVE ITEM
+		// SELECT ACTIVE OPTION
 		var selectOption = function () {
 			addTag($(options_element).find('.' + plugin.settings.prefix + 'option').eq(selected_index).data('text'));
 		};
 
 
 
-		// REMOVE PLUGIN AND REVERT SELECT ELEMENT TO ORIGINAL STATE
+		// REMOVE PLUGIN AND REVERT INPUT ELEMENT TO ORIGINAL STATE
 		plugin.destroy = function () {
 			$(box_element).remove();
 			$.removeData(element, 'tagator');

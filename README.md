@@ -75,11 +75,9 @@ destroy            | This method is used to remove the instance of the plugin fr
 ```javascript
 $('#inputBox').tagator('refresh');
 ```
-or 
 ```javascript
 $('#inputBox').tagator('autocomplete', ['tag1','tag2','tag3']);
 ```
-or 
 ```javascript
 $('#inputBox').tagator('destroy');
 ```

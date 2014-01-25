@@ -266,6 +266,13 @@
 			$(input_element).css({ width: ($(textlength_element).width() + 20) + 'px' });
 		};
 
+
+
+		// SET AUTOCOMPLETE LIST
+		plugin.autocomplete = function (autocomplete) {
+			plugin.settings.autocomplete = autocomplete !== undefined ? autocomplete : [];
+		};
+
 		
 
 		// REFRESH TAGS
@@ -473,18 +480,18 @@
 		plugin.init();
 	};
 	
-	$.fn.tagator = function(options) {
-		options = options !== undefined ? options : {};
+	$.fn.tagator = function() {
+		var parameters = arguments !== undefined ? arguments : [{}];
 		return this.each(function () {
-			if (typeof(options) === 'object') {
+			if (typeof(parameters[0]) === 'object') {
 				if (undefined === $(this).data('tagator')) {
-					var plugin = new $.tagator(this, options);
+					var plugin = new $.tagator(this, parameters[0]);
 					$(this).data('tagator', plugin);
 				}
-			} else if ($(this).data('tagator')[options]) {
-				$(this).data('tagator')[options].apply(this, Array.prototype.slice.call(arguments, 1));
+			} else if ($(this).data('tagator')[parameters[0]]) {
+				$(this).data('tagator')[parameters[0]].apply(this, Array.prototype.slice.call(parameters, 1));
 			} else {
-				$.error('Method ' + options + ' does not exist in $.tagator');
+				$.error('Method ' + parameters[0] + ' does not exist in $.tagator');
 			}
 		});
 	};

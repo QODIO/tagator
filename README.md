@@ -24,7 +24,8 @@ $('#inputBox').tagator({
     prefix: 'tagator_',           // CSS class prefix
     height: 'auto',               // auto or element
     useDimmer: false,             // dims the screen when result list is visible
-    showAllOptionsOnFocus: false  // shows all options even if input box is empty
+    showAllOptionsOnFocus: false, // shows all options even if input box is empty
+    autocomplete: []              // this is an array of autocomplete options
 });
 ```
 
@@ -65,13 +66,18 @@ jQuery methods
 --------------
 Method             | Description
 ------------------ | -----------
-refresh            | This method is used internally by the plugin, but you can also call it manually, it is used to refresh the plugin. A scenario where this would be useful is if the data in the original input box is changed by some other script.
+refresh            | This method is used to manually refresh the plugin. A scenario where this would be useful is if the data in the original input box is changed by some other script.
+autocomplete       | This method is used to change/update the autocomplete list
 destroy            | This method is used to remove the instance of the plugin from the input box and restore it to its original state.
 
 
 ###### Method usage
 ```javascript
 $('#inputBox').tagator('refresh');
+```
+or 
+```javascript
+$('#inputBox').tagator('autocomplete', ['tag1','tag2','tag3']);
 ```
 or 
 ```javascript

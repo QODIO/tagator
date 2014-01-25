@@ -481,7 +481,7 @@
 	};
 	
 	$.fn.tagator = function() {
-		var parameters = arguments !== undefined ? arguments : [{}];
+		var parameters = arguments[0] !== undefined ? arguments : [{}];
 		return this.each(function () {
 			if (typeof(parameters[0]) === 'object') {
 				if (undefined === $(this).data('tagator')) {

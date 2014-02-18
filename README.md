@@ -9,7 +9,7 @@ Usage
 ###### include in head:
 ```html
 <link rel="stylesheet" href="fm.tagator.jquery.css"/>
-<script src="jquery-2.0.3.min.js"></script>
+<script src="jquery-1.11.0.min.js"></script>
 <script src="fm.tagator.jquery.js"></script>
 ```
 

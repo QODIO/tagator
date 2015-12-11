@@ -1,7 +1,7 @@
 /*
  Tagator jQuery Plugin
  A plugin to make input elements, tag holders
- version 1.1, Jan 13th, 2014
+ version 1.1, Dec 11th, 2015
  by Ingi P. Jacobsen
 
  The MIT License (MIT)
@@ -76,7 +76,7 @@
 			if (element.id !== undefined) {
 				$(box_element).attr('id', plugin.settings.prefix + element.id);
 			}
-			$(box_element).addClass('tagator options-hidden');
+			$(box_element).addClass(plugin.settings.prefix + 'element options-hidden');
 			$(box_element).css({
 				padding: $(element).css('padding'),
 				'flex-grow': $(element).css('flex-grow'),
@@ -500,5 +500,24 @@
 			}
 		});
 	};
-
 }(jQuery));
+
+
+$(function () {
+	$('.tagator').each(function () {
+		var $this = $(this);
+		var options = {};
+		$.each($this.data(), function (key, value) {
+			if (key.substring(0, 7) == 'tagator') {
+				var value_temp = value.toString().replace(/'/g, '"');
+				value_temp = $.parseJSON(value_temp);
+				if (typeof value_temp == 'object') {
+					value = value_temp;
+				}
+				options[key.substring(7, 8).toLowerCase() + key.substring(8)] = value;
+			}
+		});
+		console.log(options);
+		$this.tagator(options);
+	});
+});

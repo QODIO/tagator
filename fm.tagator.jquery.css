@@ -6,7 +6,7 @@
  */
 
 /* reset */
-.tagator * {
+.tagator_element * {
 	box-sizing: border-box;
 	-moz-box-sizing: border-box;
 	text-decoration: none;
@@ -22,7 +22,7 @@
 }
 
 /* Main box */
-.tagator {
+.tagator_element {
 	border: 1px solid #abadb3;
 	border-radius: 3px;
 	box-sizing: border-box;
@@ -30,7 +30,7 @@
 	display: inline-block;
 	text-decoration: none;
 }
-.tagator.options-visible {
+.tagator_element.options-visible {
 	position: relative;
 	z-index: 101;
 }
@@ -108,7 +108,7 @@
 	left: -1px;
 	right: -1px;
 }
-.tagator.options-hidden .tagator_options {
+.tagator_element.options-hidden .tagator_options {
 	display: none;
 }
 

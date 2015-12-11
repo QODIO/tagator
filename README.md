@@ -17,6 +17,11 @@ Usage
 ```javascript
 $('#inputBox').tagator();
 ```
+If you don't wan't to meddle with scripting, there is an alternative to activate replacement, by using inline markup. 
+```html
+<input type="text" class="tagator" data-datetator-use-dimmer="true" data-tagator-autocomplete="['first', 'second', 'third']">
+```
+
 
 ###### if you want to change settings:
 ```javascript
@@ -36,7 +41,7 @@ Here is a list of all the css classes
 
 Class                         | Description
 ----------------------------- | ------------------------------------------------------------------------------
-tagator                       | This is the new input box. It has some extra classes called `options-visible` and `options-hidden` which tell if the options list is visible or not.
+`prefix_`element              | This is the new input box. It has some extra classes called `options-visible` and `options-hidden` which tell if the options list is visible or not.
 `prefix_`tags                 | The holder for the tags.
 `prefix_`tag                  | The tags.
 `prefix_`tag_remove           | The remove button for the tag.
@@ -50,7 +55,7 @@ tagator                       | This is the new input box. It has some extra cla
 DOM Structure
 -------------
 * dimmer
-* tagator: *containing the `options-visible`|`options-hidden` class*
+* element: *containing the `options-visible`|`options-hidden` class*
     * textlength
     * tags
         * tag

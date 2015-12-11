@@ -517,7 +517,6 @@ $(function () {
 				options[key.substring(7, 8).toLowerCase() + key.substring(8)] = value;
 			}
 		});
-		console.log(options);
 		$this.tagator(options);
 	});
 });

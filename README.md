@@ -19,7 +19,7 @@ $('#inputBox').tagator();
 ```
 If you don't wan't to meddle with scripting, there is an alternative to activate replacement, by using inline markup. 
 ```html
-<input type="text" class="tagator" data-datetator-use-dimmer="true" data-tagator-autocomplete="['first', 'second', 'third']">
+<input type="text" class="tagator" data-tagator-use-dimmer="true" data-tagator-autocomplete="['first', 'second', 'third']">
 ```
 
 

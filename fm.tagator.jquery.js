@@ -33,9 +33,10 @@
 			height: 'auto',
 			useDimmer: false,
 			showAllOptionsOnFocus: false,
+            allowAutocompleteOnly: false,
 			autocomplete: []
 		};
-	
+
 		var plugin = this;
 		var selected_index = -1;
 		var box_element = null;
@@ -55,8 +56,8 @@
 		};
 		plugin.settings = {};
 
-		
-		
+
+
 		// INITIALIZE PLUGIN
 		plugin.init = function () {
 			plugin.settings = $.extend({}, defaults, options);
@@ -262,9 +263,9 @@
 			});
 			refreshTags();
 		};
-		
-		
-		
+
+
+
 		// RESIZE INPUT
 		var resizeInput = function () {
 			textlength_element.innerHTML = input_element.value;
@@ -278,7 +279,7 @@
 			plugin.settings.autocomplete = autocomplete !== undefined ? autocomplete : [];
 		};
 
-		
+
 
 		// REFRESH TAGS
 		plugin.refresh = function () {
@@ -288,7 +289,7 @@
 			$(tags_element).empty();
 			var tags = $(element).val().split(',');
 			$.each(tags, function (key, value) {
-				if (value !== '') {
+				if (value !== '' && checkAllowedTag(value)) {
 					var tag_element = document.createElement('div');
 					$(tag_element).addClass(plugin.settings.prefix + 'tag');
 					$(tag_element).html(value);
@@ -312,13 +313,13 @@
 					var clear_element = document.createElement('div');
 					clear_element.style.clear = 'both';
 					$(tag_element).append(clear_element);
-	
+
 					$(tags_element).append(tag_element);
 				}
 			});
 			searchOptions();
 		};
-		
+
 		// REMOVE TAG FROM ORIGINAL ELEMENT
 		var removeTag = function (text) {
 			var tagsBefore = $(element).val().split(',');
@@ -330,7 +331,7 @@
 			});
 			$(element).val(tagsAfter.join(','));
 		};
-		
+
 		// CHECK IF TAG IS PRESENT
 		var hasTag = function (text) {
 			var tags = $(element).val().split(',');
@@ -342,10 +343,25 @@
 			});
 			return hasTag;
 		};
-		
+
+		// CHECK IF TAG IS ALLOWED
+		var checkAllowedTag = function (text) {
+            if (!plugin.settings.allowAutocompleteOnly) {
+                return true;
+            }
+
+			var checkAllowedTag = false;
+			$.each(plugin.settings.autocomplete, function (key, value) {
+				if ($.trim(value) === $.trim(text)) {
+                    checkAllowedTag = true;
+				}
+			});
+			return checkAllowedTag;
+		};
+
 		// ADD TAG TO ORIGINAL ELEMENT
 		var addTag = function (text) {
-			if (!hasTag(text)) {
+			if (!hasTag(text) && checkAllowedTag(text)) {
 				$(element).val($(element).val() + ($(element).val() !== '' ? ',' : '') + text);
 				$(element).trigger('change');
 			}
@@ -353,8 +369,6 @@
 			box_element.focus();
 			hideOptions();
 		};
-
-
 
 		// OPTIONS SEARCH METHOD
 		var searchOptions = function () {

@@ -30,6 +30,7 @@ $('#inputBox').tagator({
     height: 'auto',               // auto or element
     useDimmer: false,             // dims the screen when result list is visible
     showAllOptionsOnFocus: false, // shows all options even if input box is empty
+    allowAutocompleteOnly: false, // only allow the autocomplete options
     autocomplete: []              // this is an array of autocomplete options
 });
 ```

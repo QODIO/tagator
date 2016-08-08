@@ -34,7 +34,9 @@
 			useDimmer:             false,
 			showAllOptionsOnFocus: false,
 			allowAutocompleteOnly: false,
-			autocomplete:          []
+			autocomplete:          [],
+			remote:'',
+			paramName:'keyword',
 		};
 
 		var plugin = this;
@@ -107,6 +109,7 @@
 			$(tags_element).addClass(plugin.settings.prefix + 'tags');
 			$(box_element).append(tags_element);
 			// input element
+			input_element = document.createElement('input');
 			input_element = document.createElement('input');
 			$(input_element).addClass(plugin.settings.prefix + 'input');
 			$(input_element).width(20);
@@ -371,14 +374,41 @@
 			$(options_element).empty();
 			if (input_element.value.replace(/\s/g, '') !== '' || plugin.settings.showAllOptionsOnFocus) {
 				var optionsArray = [];
-				$.each(plugin.settings.autocomplete, function (key, value) {
-					if (value.toLowerCase().indexOf(input_element.value.toLowerCase()) !== -1) {
-						if (!hasTag(value)) {
-							optionsArray.push(value);
-						}
+				if(plugin.settings.autocomplete.length == 0 && plugin.settings.remote != ''){
+					//when autocomplete is empty，do remote(json)
+					if(plugin.settings.paramName == ''){
+						console.log("Sorry,your paramName is null!");
+						return false;
 					}
-				});
-				generateOptions(optionsArray);
+					var params = {};
+					params[plugin.settings.paramName] = $(input_element).val();
+					$.ajax({
+						type:'post',
+						dataType:'json',
+						url:plugin.settings.remote,
+						data:params,
+						success:function(response){
+							$.each(response, function (key, value) {
+								if (value.toLowerCase().indexOf(input_element.value.toLowerCase()) !== -1) {
+									if (!hasTag(value)) {
+										optionsArray.push(value);
+									}
+								}
+							});
+							generateOptions(optionsArray);
+							showOptions();
+						}
+					});
+				}else{
+					$.each(plugin.settings.autocomplete, function (key, value) {
+						if (value.toLowerCase().indexOf(input_element.value.toLowerCase()) !== -1) {
+							if (!hasTag(value)) {
+								optionsArray.push(value);
+							}
+						}
+					});
+					generateOptions(optionsArray);
+				}
 			}
 			if ($(input_element).is(':focus')) {
 				if (!$(options_element).is(':empty')) {

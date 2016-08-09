@@ -42,14 +42,15 @@ Here is a list of all the css classes
 
 Class                         | Description
 ----------------------------- | ------------------------------------------------------------------------------
-`prefix_`element              | This is the new input box. It has some extra classes called `options-visible` and `options-hidden` which tell if the options list is visible or not.
-`prefix_`tags                 | The holder for the tags.
-`prefix_`tag                  | The tags.
-`prefix_`tag_remove           | The remove button for the tag.
-`prefix_`input                | This is the input box for the tagator.
-`prefix_`textlength           | This is used to calculate the size of the input box.
-`prefix_`options              | The autocomplete options list holder. This is used together with `options-visible` or `options-hidden` to show or hide the autocomplete options.
-`prefix_`option               | This is a autocomplete option. It has an extra class called `active` which tells if the option is the active one.
+`prefix_`element              | This is the new input box. It has some extra classes called `options-visible` and `options-hidden` which tell if the options list is visible or not
+`prefix_`tags                 | The holder for the tags
+`prefix_`tag                  | The tags
+`prefix_`tag_remove           | The remove button for the tag
+`prefix_`placeholder          | The placeholder element
+`prefix_`input                | This is the input box for the tagator
+`prefix_`textlength           | This is used to calculate the size of the input box
+`prefix_`options              | The autocomplete options list holder. This is used together with `options-visible` or `options-hidden` to show or hide the autocomplete options
+`prefix_`option               | This is a autocomplete option. It has an extra class called `active` which tells if the option is the active one
 `prefix_`dimmer               | This is the dimmer
 
 
@@ -62,6 +63,7 @@ DOM Structure
         * tag
             * tag_remove
         * tag...
+    * placeholder
     * input
     * options
         * option: *containing the `active` class*

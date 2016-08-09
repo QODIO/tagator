@@ -36,6 +36,15 @@
 	z-index: 101;
 }
 
+/* placeholder */
+.tagator_placeholder {
+	position: absolute;
+	color: #999;
+	left: 4px;
+	top: 4px;
+	font-size: 13px;
+}
+
 /* chosen items holder */
 .tagator_tags {
 	display: inline;
@@ -86,6 +95,8 @@
 	font-size: 13px;
 	outline: none;
 	padding: 4px 0 0 5px;
+	position: relative;
+	z-index: 1;
 }
 .tagator_input {
 	/*padding: 0px 0px;*/

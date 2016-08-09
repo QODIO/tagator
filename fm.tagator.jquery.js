@@ -1,7 +1,7 @@
 /*
  Tagator jQuery Plugin
  A plugin to make input elements, tag holders
- version 1.1, Dec 11th, 2015
+ version 1.2, Aug 9th, 2016
  by Ingi P. Jacobsen
 
  The MIT License (MIT)
@@ -27,7 +27,7 @@
  */
 
 (function ($) {
-	$.tagator = function (element, options) {
+	$.tagator = function (source_element, options) {
 		var defaults = {
 			prefix:                'tagator_',
 			height:                'auto',
@@ -37,13 +37,15 @@
 			autocomplete:          []
 		};
 
-		var plugin = this;
+		var self = this;
 		var selected_index = -1;
-		var box_element = null;
-		var tags_element = null;
-		var input_element = null;
-		var textlength_element = null;
-		var options_element = null;
+		var $source_element = $(source_element);
+		var $tagator_element = null;
+		var $tags_element = null;
+		var $placeholder_element = null;
+		var $input_element = null;
+		var $textlength_element = null;
+		var $options_element = null;
 		var key = {
 			backspace: 8,
 			enter:     13,
@@ -54,126 +56,130 @@
 			down:      40,
 			comma:     188
 		};
-		plugin.settings = {};
+		self.settings = {};
 
 
 		// INITIALIZE PLUGIN
-		plugin.init = function () {
-			plugin.settings = $.extend({}, defaults, options);
+		self.init = function () {
+			self.settings = $.extend({}, defaults, options);
 
 			//// ================== CREATE ELEMENTS ================== ////
 			// dimmer
-			if (plugin.settings.useDimmer) {
-				if ($('#' + plugin.settings.prefix + 'dimmer').length === 0) {
-					var dimmer_element = document.createElement('div');
-					$(dimmer_element).attr('id', plugin.settings.prefix + 'dimmer');
-					$(dimmer_element).hide();
-					$(document.body).prepend(dimmer_element);
+			if (self.settings.useDimmer) {
+				if ($('#' + self.settings.prefix + 'dimmer').length === 0) {
+					var $dimmer_element = $(document.createElement('div'));
+					$dimmer_element.attr('id', self.settings.prefix + 'dimmer');
+					$dimmer_element.hide();
+					$(document.body).prepend($dimmer_element);
 				}
 			}
 			// box element
-			box_element = document.createElement('div');
-			if (element.id !== undefined) {
-				$(box_element).attr('id', plugin.settings.prefix + element.id);
+			$tagator_element = $(document.createElement('div'));
+			if ($source_element[0].id !== undefined) {
+				$tagator_element.attr('id', self.settings.prefix + $source_element[0].id);
 			}
-			$(box_element).addClass(plugin.settings.prefix + 'element options-hidden');
-			$(box_element).css({
-				padding:     $(element).css('padding'),
-				'flex-grow': $(element).css('flex-grow'),
+			$tagator_element.addClass(self.settings.prefix + 'element options-hidden');
+			$tagator_element.css({
+				padding:     $source_element.css('padding'),
+				'flex-grow': $source_element.css('flex-grow'),
 				position:    'relative'
 			});
-			if (parseInt($(element).css('width')) != 0) {
-				$(box_element).css({
-					width: $(element).css('width')
+			if (parseInt($source_element.css('width')) != 0) {
+				$tagator_element.css({
+					width: $source_element.css('width')
 				});
 			}
-			if (plugin.settings.height === 'element') {
-				$(box_element).css({
-					height: $(element).outerHeight() + 'px'
+			if (self.settings.height === 'element') {
+				$tagator_element.css({
+					height: $source_element.outerHeight + 'px'
 				});
 			}
-			$(element).after(box_element);
-			$(element).hide();
+			$source_element.after($tagator_element);
+			$source_element.hide();
 			// textlength element
-			textlength_element = document.createElement('span');
-			$(textlength_element).addClass(plugin.settings.prefix + 'textlength');
-			$(textlength_element).css({
+			$textlength_element = $(document.createElement('span'));
+			$textlength_element.addClass(self.settings.prefix + 'textlength');
+			$textlength_element.css({
 				position:   'absolute',
 				visibility: 'hidden'
 			});
-			$(box_element).append(textlength_element);
+			$tagator_element.append($textlength_element);
 			// tags element
-			tags_element = document.createElement('div');
-			$(tags_element).addClass(plugin.settings.prefix + 'tags');
-			$(box_element).append(tags_element);
+			$tags_element = $(document.createElement('div'));
+			$tags_element.addClass(self.settings.prefix + 'tags');
+			$tagator_element.append($tags_element);
+			// placeholder element
+			$placeholder_element = $(document.createElement('div'));
+			$placeholder_element.addClass(self.settings.prefix + 'placeholder');
+			$tagator_element.append($placeholder_element);
 			// input element
-			input_element = document.createElement('input');
-			$(input_element).addClass(plugin.settings.prefix + 'input');
-			$(input_element).width(20);
-			$(input_element).attr('autocomplete', 'false');
-			$(box_element).append(input_element);
+			$input_element = $(document.createElement('input'));
+			$input_element.addClass(self.settings.prefix + 'input');
+			$input_element.width(20);
+			$input_element.attr('autocomplete', 'false');
+			$tagator_element.append($input_element);
 			// options element
-			options_element = document.createElement('ul');
-			$(options_element).addClass(plugin.settings.prefix + 'options');
+			$options_element = $(document.createElement('ul'));
+			$options_element.addClass(self.settings.prefix + 'options');
 
-			$(box_element).append(options_element);
+			$tagator_element.append($options_element);
 
 			//// ================== BIND ELEMENTS EVENTS ================== ////
 			// source element
-			$(element).change(function () {
+			$source_element.change(function () {
 				refreshTags();
 			});
 			// box element
-			$(box_element).bind('focus', function (e) {
+			$tagator_element.bind('focus', function (e) {
 				e.preventDefault();
 				e.stopPropagation();
 				showOptions();
-				$(input_element).focus();
+				$input_element.focus();
 			});
-			$(box_element).bind('mousedown', function (e) {
+			$tagator_element.bind('mousedown', function (e) {
 				e.preventDefault();
 				e.stopPropagation();
-				input_element.focus();
-				if (input_element.setSelectionRange) {
-					input_element.focus();
-					input_element.setSelectionRange(input_element.value.length, input_element.value.length);
-				} else if (input_element.createTextRange) {
-					var range = input_element.createTextRange();
+				$input_element.focus();
+				if ($input_element[0].setSelectionRange) {
+					$input_element.focus();
+					$input_element[0].setSelectionRange($input_element.val().length, $input_element.val().length);
+				} else if ($input_element[0].createTextRange) {
+					var range = $input_element[0].createTextRange();
 					range.collapse(true);
-					range.moveEnd('character', input_element.value.length);
-					range.moveStart('character', input_element.value.length);
+					range.moveEnd('character', $input_element.val().length);
+					range.moveStart('character', $input_element.val().length);
 					range.select();
 				}
 			});
-			$(box_element).bind('mouseup', function (e) {
+			$tagator_element.bind('mouseup', function (e) {
 				e.preventDefault();
 				e.stopPropagation();
 			});
-			$(box_element).bind('click', function (e) {
+			$tagator_element.bind('click', function (e) {
 				e.preventDefault();
 				e.stopPropagation();
-				if (plugin.settings.showAllOptionsOnFocus) {
+				if (self.settings.showAllOptionsOnFocus) {
 					//showOptions();
 					searchOptions();
 				}
-				input_element.focus();
+				$input_element.focus();
 			});
-			$(box_element).bind('dblclick', function (e) {
+			$tagator_element.bind('dblclick', function (e) {
 				e.preventDefault();
 				e.stopPropagation();
-				input_element.focus();
-				input_element.select();
+				$input_element.focus();
+				$input_element.select();
 			});
 			// input element
-			$(input_element).bind('click', function (e) {
+			$input_element.bind('click', function (e) {
 				e.preventDefault();
 				e.stopPropagation();
 			});
-			$(input_element).bind('dblclick', function (e) {
+			$input_element.bind('dblclick', function (e) {
 				e.preventDefault();
 				e.stopPropagation();
 			});
-			$(input_element).bind('keydown', function (e) {
+			$input_element.bind('keydown', function (e) {
 				e.stopPropagation();
 				var keyCode = e.keyCode || e.which;
 				switch (keyCode) {
@@ -182,14 +188,14 @@
 						if (selected_index > -1) {
 							selected_index = selected_index - 1;
 						} else {
-							selected_index = $(options_element).find('.' + plugin.settings.prefix + 'option').length - 1;
+							selected_index = $options_element.find('.' + self.settings.prefix + 'option').length - 1;
 						}
 						refreshActiveOption();
 						scrollToActiveOption();
 						break;
 					case key.down:
 						e.preventDefault();
-						if (selected_index < $(options_element).find('.' + plugin.settings.prefix + 'option').length - 1) {
+						if (selected_index < $options_element.find('.' + self.settings.prefix + 'option').length - 1) {
 							selected_index = selected_index + 1;
 						} else {
 							selected_index = -1;
@@ -203,8 +209,8 @@
 					case key.comma:
 						e.preventDefault();
 						if (selected_index === -1) {
-							if ($(input_element).val() !== '') {
-								addTag($(input_element).val());
+							if ($input_element.val() !== '') {
+								addTag($input_element.val());
 							}
 						}
 						resizeInput();
@@ -214,16 +220,16 @@
 						if (selected_index !== -1) {
 							selectOption();
 						} else {
-							if ($(input_element).val() !== '') {
-								addTag($(input_element).val());
+							if ($input_element.val() !== '') {
+								addTag($input_element.val());
 							}
 						}
 						resizeInput();
 						break;
 					case key.backspace:
-						if (input_element.value === '') {
-							$(element).val($(element).val().substring(0, $(element).val().lastIndexOf(',')));
-							$(element).trigger('change');
+						if ($input_element.val() === '') {
+							$source_element.val($source_element.val().substring(0, $source_element.val().lastIndexOf(',')));
+							$source_element.trigger('change');
 							searchOptions();
 						}
 						resizeInput();
@@ -232,8 +238,9 @@
 						resizeInput();
 						break;
 				}
+				refreshPlaceholder();
 			});
-			$(input_element).bind('keyup', function (e) {
+			$input_element.bind('keyup', function (e) {
 				e.preventDefault();
 				e.stopPropagation();
 				var keyCode = e.keyCode || e.which;
@@ -242,20 +249,21 @@
 				} else if (keyCode < 37 || keyCode > 40) {
 					searchOptions();
 				}
-				if ($(box_element).hasClass('options-hidden') && (keyCode === key.left || keyCode === key.right || keyCode === key.up || keyCode === key.down)) {
+				if ($tagator_element.hasClass('options-hidden') && (keyCode === key.left || keyCode === key.right || keyCode === key.up || keyCode === key.down)) {
 					searchOptions();
 				}
 				resizeInput();
+				refreshPlaceholder();
 			});
-			$(input_element).bind('focus', function (e) {
+			$input_element.bind('focus', function (e) {
 				e.preventDefault();
 				e.stopPropagation();
-				if (!$(options_element).is(':empty') || plugin.settings.showAllOptionsOnFocus) {
+				if (!$options_element.is(':empty') || self.settings.showAllOptionsOnFocus) {
 					searchOptions();
 					showOptions();
 				}
 			});
-			$(input_element).bind('blur', function (e) {
+			$input_element.bind('blur', function (e) {
 				e.preventDefault();
 				e.stopPropagation();
 				hideOptions();
@@ -266,71 +274,82 @@
 
 		// RESIZE INPUT
 		var resizeInput = function () {
-			textlength_element.innerHTML = input_element.value;
-			$(input_element).css({width: ($(textlength_element).width() + 20) + 'px'});
+			$textlength_element.html($input_element.val());
+			$input_element.css({width: ($textlength_element.width() + 20) + 'px'});
 		};
 
 
 		// SET AUTOCOMPLETE LIST
-		plugin.autocomplete = function (autocomplete) {
-			plugin.settings.autocomplete = autocomplete !== undefined ? autocomplete : [];
+		self.autocomplete = function (autocomplete) {
+			self.settings.autocomplete = autocomplete !== undefined ? autocomplete : [];
 		};
 
 
 		// REFRESH TAGS
-		plugin.refresh = function () {
+		self.refresh = function () {
 			refreshTags();
 		};
 		var refreshTags = function () {
-			$(tags_element).empty();
-			var tags = $(element).val().split(',');
+			$tags_element.empty();
+			var tags = $source_element.val().split(',');
 			$.each(tags, function (key, value) {
 				if (value !== '' && checkAllowedTag(value)) {
-					var tag_element = document.createElement('div');
-					$(tag_element).addClass(plugin.settings.prefix + 'tag');
-					$(tag_element).html(value);
+					var $tag_element = $(document.createElement('div'));
+					$tag_element.addClass(self.settings.prefix + 'tag');
+					$tag_element.html(value);
 					// remove button
-					var button_remove_element = document.createElement('div');
-					$(button_remove_element).data('text', value);
-					$(button_remove_element).addClass(plugin.settings.prefix + 'tag_remove');
-					$(button_remove_element).bind('mousedown', function (e) {
+					var $button_remove_element = $(document.createElement('div'));
+					$button_remove_element.data('text', value);
+					$button_remove_element.addClass(self.settings.prefix + 'tag_remove');
+					$button_remove_element.bind('mousedown', function (e) {
 						e.preventDefault();
 						e.stopPropagation();
 					});
-					$(button_remove_element).bind('mouseup', function (e) {
+					$button_remove_element.bind('mouseup', function (e) {
 						e.preventDefault();
 						e.stopPropagation();
 						removeTag($(this).data('text'));
-						$(element).trigger('change');
+						$source_element.trigger('change');
 					});
-					$(button_remove_element).html('X');
-					$(tag_element).append(button_remove_element);
+					$button_remove_element.html('X');
+					$tag_element.append($button_remove_element);
 					// clear
-					var clear_element = document.createElement('div');
-					clear_element.style.clear = 'both';
-					$(tag_element).append(clear_element);
+					var $clear_element = $(document.createElement('div'));
+					$clear_element.css('clear', 'both');
+					$tag_element.append($clear_element);
 
-					$(tags_element).append(tag_element);
+					$tags_element.append($tag_element);
 				}
 			});
+			refreshPlaceholder();
 			searchOptions();
+		};
+		
+		// REFRESH PLACEHOLDER
+		var refreshPlaceholder = function () {
+			if ($tags_element.is(':empty') && !$input_element.val() && $source_element.attr('placeholder')) {
+				$placeholder_element.html($source_element.attr('placeholder'));
+				$placeholder_element.show();
+			} else {
+				$placeholder_element.hide();
+			}
 		};
 
 		// REMOVE TAG FROM ORIGINAL ELEMENT
 		var removeTag = function (text) {
-			var tagsBefore = $(element).val().split(',');
+			var tagsBefore = $source_element.val().split(',');
 			var tagsAfter = [];
 			$.each(tagsBefore, function (key, value) {
 				if (value !== text && value !== '') {
 					tagsAfter.push(value);
 				}
 			});
-			$(element).val(tagsAfter.join(','));
+			$source_element.val(tagsAfter.join(','));
 		};
 
 		// CHECK IF TAG IS PRESENT
 		var hasTag = function (text) {
-			var tags = $(element).val().split(',');
+			var tags = $source_element.val().split(',');
 			var hasTag = false;
 			$.each(tags, function (key, value) {
 				if ($.trim(value) === $.trim(text)) {
@@ -342,12 +361,12 @@
 
 		// CHECK IF TAG IS ALLOWED
 		var checkAllowedTag = function (text) {
-			if (!plugin.settings.allowAutocompleteOnly) {
+			if (!self.settings.allowAutocompleteOnly) {
 				return true;
 			}
 
 			var checkAllowedTag = false;
-			$.each(plugin.settings.autocomplete, function (key, value) {
+			$.each(self.settings.autocomplete, function (key, value) {
 				if ($.trim(value) === $.trim(text)) {
 					checkAllowedTag = true;
 				}
@@ -358,21 +377,21 @@
 		// ADD TAG TO ORIGINAL ELEMENT
 		var addTag = function (text) {
 			if (!hasTag(text) && checkAllowedTag(text)) {
-				$(element).val($(element).val() + ($(element).val() !== '' ? ',' : '') + text);
-				$(element).trigger('change');
+				$source_element.val($source_element.val() + ($source_element.val() !== '' ? ',' : '') + text);
+				$source_element.trigger('change');
 			}
-			$(input_element).val('');
-			box_element.focus();
+			$input_element.val('');
+			$tagator_element.focus();
 			hideOptions();
 		};
 
 		// OPTIONS SEARCH METHOD
 		var searchOptions = function () {
-			$(options_element).empty();
-			if (input_element.value.replace(/\s/g, '') !== '' || plugin.settings.showAllOptionsOnFocus) {
+			$options_element.empty();
+			if ($input_element.val().replace(/\s/g, '') !== '' || self.settings.showAllOptionsOnFocus) {
 				var optionsArray = [];
-				$.each(plugin.settings.autocomplete, function (key, value) {
-					if (value.toLowerCase().indexOf(input_element.value.toLowerCase()) !== -1) {
+				$.each(self.settings.autocomplete, function (key, value) {
+					if (value.toLowerCase().indexOf($input_element.val().toLowerCase()) !== -1) {
 						if (!hasTag(value)) {
 							optionsArray.push(value);
 						}
@@ -380,8 +399,8 @@
 				});
 				generateOptions(optionsArray);
 			}
-			if ($(input_element).is(':focus')) {
-				if (!$(options_element).is(':empty')) {
+			if ($input_element.is(':focus')) {
+				if (!$options_element.is(':empty')) {
 					showOptions();
 				} else {
 					hideOptions();
@@ -398,7 +417,7 @@
 			$(optionsArray).each(function (key, value) {
 				index++;
 				var option = createOption(value, index);
-				$(options_element).append(option);
+				$options_element.append(option);
 			});
 			refreshActiveOption();
 		};
@@ -410,7 +429,7 @@
 			$(option).data('index', index);
 			$(option).data('text', text);
 			$(option).html(text);
-			$(option).addClass(plugin.settings.prefix + 'option');
+			$(option).addClass(self.settings.prefix + 'option');
 			if (this.selected) {
 				$(option).addClass('active');
 			}
@@ -438,60 +457,60 @@
 
 		// SHOW OPTIONS AND DIMMER
 		var showOptions = function () {
-			$(box_element).removeClass('options-hidden').addClass('options-visible');
-			if (plugin.settings.useDimmer) {
-				$('#' + plugin.settings.prefix + 'dimmer').show();
+			$tagator_element.removeClass('options-hidden').addClass('options-visible');
+			if (self.settings.useDimmer) {
+				$('#' + self.settings.prefix + 'dimmer').show();
 			}
-			$(options_element).css('top', ($(box_element).outerHeight() - 2) + 'px');
-			if ($(box_element).hasClass('single')) {
-				selected_index = $(options_element).find('.' + plugin.settings.prefix + 'option').index($(options_element).find('.' + plugin.settings.prefix + 'option.active'));
+			$options_element.css('top', ($tagator_element.outerHeight - 2) + 'px');
+			if ($tagator_element.hasClass('single')) {
+				selected_index = $options_element.find('.' + self.settings.prefix + 'option').index($options_element.find('.' + self.settings.prefix + 'option.active'));
 			}
 			scrollToActiveOption();
 		};
 
 		// HIDE OPTIONS AND DIMMER
 		var hideOptions = function () {
-			$(box_element).removeClass('options-visible').addClass('options-hidden');
-			if (plugin.settings.useDimmer) {
-				$('#' + plugin.settings.prefix + 'dimmer').hide();
+			$tagator_element.removeClass('options-visible').addClass('options-hidden');
+			if (self.settings.useDimmer) {
+				$('#' + self.settings.prefix + 'dimmer').hide();
 			}
 		};
 
 		// REFRESH ACTIVE IN OPTIONS METHOD
 		var refreshActiveOption = function () {
-			$(options_element).find('.active').removeClass('active');
+			$options_element.find('.active').removeClass('active');
 			if (selected_index !== -1) {
-				$(options_element).find('.' + plugin.settings.prefix + 'option').eq(selected_index).addClass('active');
+				$options_element.find('.' + self.settings.prefix + 'option').eq(selected_index).addClass('active');
 			}
 		};
 
 		// SCROLL TO ACTIVE OPTION IN OPTIONS LIST
 		var scrollToActiveOption = function () {
-			var $active_element = $(options_element).find('.' + plugin.settings.prefix + 'option.active');
+			var $active_element = $options_element.find('.' + self.settings.prefix + 'option.active');
 			if ($active_element.length > 0) {
-				$(options_element).scrollTop($(options_element).scrollTop() + $active_element.position().top - $(options_element).height() / 2 + $active_element.height() / 2);
+				$options_element.scrollTop($options_element.scrollTop() + $active_element.position().top - $options_element.height() / 2 + $active_element.height() / 2);
 			}
 
 		};
 
 		// SELECT ACTIVE OPTION
 		var selectOption = function () {
-			addTag($(options_element).find('.' + plugin.settings.prefix + 'option').eq(selected_index).data('text'));
+			addTag($options_element.find('.' + self.settings.prefix + 'option').eq(selected_index).data('text'));
 		};
 
 
 		// REMOVE PLUGIN AND REVERT INPUT ELEMENT TO ORIGINAL STATE
-		plugin.destroy = function () {
-			$(box_element).remove();
-			$.removeData(element, 'tagator');
-			$(element).show();
+		self.destroy = function () {
+			$tagator_element.remove();
+			$.removeData($source_element, 'tagator');
+			$source_element.show();
 			if ($('.tagator').length === 0) {
-				$('#' + plugin.settings.prefix + 'dimmer').remove();
+				$('#' + self.settings.prefix + 'dimmer').remove();
 			}
 		};
 
 		// Initialize plugin
-		plugin.init();
+		self.init();
 	};
 
 	$.fn.tagator = function () {

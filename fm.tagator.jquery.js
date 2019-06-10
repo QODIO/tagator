@@ -2,7 +2,7 @@
  Tagator jQuery Plugin
  A plugin to make input elements, tag holders
  version 1.2, Aug 9th, 2016
- by Ingi P. Jacobsen
+ by Ingi á Steinamørk
 
  The MIT License (MIT)
 

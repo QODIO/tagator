@@ -84,7 +84,7 @@
 				'flex-grow': $source_element.css('flex-grow'),
 				position:    'relative'
 			});
-			if (parseInt($source_element.css('width')) != 0) {
+			if (parseInt($source_element.css('width')) !== 0) {
 				$tagator_element.css({
 					width: $source_element.css('width')
 				});
@@ -324,7 +324,7 @@
 			refreshPlaceholder();
 			searchOptions();
 		};
-		
+
 		// REFRESH PLACEHOLDER
 		var refreshPlaceholder = function () {
 			if ($tags_element.is(':empty') && !$input_element.val() && $source_element.attr('placeholder')) {
@@ -502,7 +502,7 @@
 		// REMOVE PLUGIN AND REVERT INPUT ELEMENT TO ORIGINAL STATE
 		self.destroy = function () {
 			$tagator_element.remove();
-			$.removeData($source_element, 'tagator');
+			$source_element.removeData('tagator');
 			$source_element.show();
 			if ($('.tagator').length === 0) {
 				$('#' + self.settings.prefix + 'dimmer').remove();
@@ -536,7 +536,7 @@ $(function () {
 		var $this = $(this);
 		var options = {};
 		$.each($this.data(), function (key, value) {
-			if (key.substring(0, 7) == 'tagator') {
+			if (key.substring(0, 7) === 'tagator') {
 				var value_temp = value.toString().replace(/'/g, '"');
 				value_temp = $.parseJSON(value_temp);
 				if (typeof value_temp == 'object') {

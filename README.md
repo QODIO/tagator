@@ -1,4 +1,4 @@
-DEPRECATED - no longer actively maintained
+Forked Copy From QODIO/tagator
 ==========================================
 
 Tagator

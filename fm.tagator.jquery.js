@@ -29,12 +29,12 @@
 (function ($) {
 	$.tagator = function (source_element, options) {
 		var defaults = {
-			prefix:                'tagator_',
-			height:                'auto',
-			useDimmer:             false,
+			prefix: 'tagator_',
+			height: 'auto',
+			useDimmer: false,
 			showAllOptionsOnFocus: false,
 			allowAutocompleteOnly: false,
-			autocomplete:          []
+			autocomplete: [],
 		};
 
 		var self = this;
@@ -48,13 +48,14 @@
 		var $options_element = null;
 		var key = {
 			backspace: 8,
-			enter:     13,
-			escape:    27,
-			left:      37,
-			up:        38,
-			right:     39,
-			down:      40,
-			comma:     188
+			enter: 13,
+			escape: 27,
+			left: 37,
+			up: 38,
+			right: 39,
+			down: 40,
+			comma: 188,
+			tab: 9,
 		};
 		self.settings = {};
 
@@ -80,18 +81,18 @@
 			}
 			$tagator_element.addClass(self.settings.prefix + 'element options-hidden');
 			$tagator_element.css({
-				padding:     $source_element.css('padding'),
+				padding: $source_element.css('padding'),
 				'flex-grow': $source_element.css('flex-grow'),
-				position:    'relative'
+				position: 'relative',
 			});
 			if (parseInt($source_element.css('width')) !== 0) {
 				$tagator_element.css({
-					width: $source_element.css('width')
+					width: $source_element.css('width'),
 				});
 			}
 			if (self.settings.height === 'element') {
 				$tagator_element.css({
-					height: $source_element.outerHeight + 'px'
+					height: $source_element.outerHeight + 'px',
 				});
 			}
 			$source_element.after($tagator_element);
@@ -100,8 +101,8 @@
 			$textlength_element = $(document.createElement('span'));
 			$textlength_element.addClass(self.settings.prefix + 'textlength');
 			$textlength_element.css({
-				position:   'absolute',
-				visibility: 'hidden'
+				position: 'absolute',
+				visibility: 'hidden',
 			});
 			$tagator_element.append($textlength_element);
 			// tags element
@@ -226,6 +227,17 @@
 						}
 						resizeInput();
 						break;
+					case key.tab:
+							e.preventDefault();
+							if (selected_index !== -1) {
+								selectOption();
+							} else {
+								if ($input_element.val() !== '') {
+									addTag($input_element.val());
+								}
+							}
+							resizeInput();
+							break;
 					case key.backspace:
 						if ($input_element.val() === '') {
 							$source_element.val($source_element.val().substring(0, $source_element.val().lastIndexOf(',')));
@@ -266,6 +278,9 @@
 			$input_element.bind('blur', function (e) {
 				e.preventDefault();
 				e.stopPropagation();
+				if ($input_element.val() !== '') {
+					addTag($input_element.val());
+				}
 				hideOptions();
 			});
 			refreshTags();
@@ -275,7 +290,7 @@
 		// RESIZE INPUT
 		var resizeInput = function () {
 			$textlength_element.html($input_element.val());
-			$input_element.css({width: ($textlength_element.width() + 20) + 'px'});
+			$input_element.css({ width: ($textlength_element.width() + 20) + 'px' });
 		};
 
 
@@ -430,9 +445,9 @@
 			$(option).data('text', text);
 			$(option).html(text);
 			$(option).addClass(self.settings.prefix + 'option');
-			if (this.selected) {
-				$(option).addClass('active');
-			}
+			// if (this.selected) {
+			// 	$(option).addClass('active');
+			// }
 
 			// BIND EVENTS
 			$(option).bind('mouseover', function (e) {
@@ -516,7 +531,7 @@
 	$.fn.tagator = function () {
 		var parameters = arguments[0] !== undefined ? arguments : [{}];
 		return this.each(function () {
-			if (typeof(parameters[0]) === 'object') {
+			if (typeof (parameters[0]) === 'object') {
 				if (undefined === $(this).data('tagator')) {
 					var plugin = new $.tagator(this, parameters[0]);
 					$(this).data('tagator', plugin);

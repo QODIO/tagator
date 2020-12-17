@@ -1,6 +1,3 @@
-Forked Copy From QODIO/tagator
-==========================================
-
 Tagator
 ==========
 Tagator is a jQuery-based replacement for input boxes, making them tagging boxes. It supports searching, and affects the original input box directly, which is used as a comma serparated data container.
